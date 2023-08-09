@@ -28,7 +28,7 @@ async def shutdown():
     await database.disconnect()
 
 
-@app.get("/", response_model=MonitorModel)
+@app.get("/api", response_model=MonitorModel)
 async def root():
     return monitor.as_model()
 
