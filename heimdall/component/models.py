@@ -137,6 +137,7 @@ class Component:
             self.history = [self.current] + self.history[:9]
             self.current = ComponentStateModel(id=id, component=self.name, timestamp=datetime.utcnow(), state=state)
             LOG.info("Component '%s' changed state: %s", self.name, self.current)
+            return self
 
     async def check(self) -> ComponentState:
         LOG.debug("Dummy check of %s", self)
