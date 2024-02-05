@@ -14,6 +14,12 @@ DEBUG: bool = cast(bool, get_env("HD_DEBUG", cast=bool, default=True))
 TZ: ZoneInfo = cast(ZoneInfo, get_env("HD_TZ", default="Europe/Oslo"))
 CONFIG_FILE = Path("config.json")
 
+# Email settings
+EMAIL_ADDRESS = "Heimdall <system@ulv.io>"
+EMAIL_RECIPIENT = get_env("HD_EMAIL_RECIPIENT")
+EMAIL_SMTP_SERVER = "smtp-relay.gmail.com"
+EMAIL_SMTP_PORT = 587
+
 # Uvicorn settings
 HOST: str = cast(str, get_env("HD_HOST", default="0.0.0.0"))
 PORT: int = cast(int, get_env("HD_PORT", default=8000))

@@ -1,6 +1,6 @@
 """Monitoring agent"""
 
-from asyncio import CancelledError, Task, create_task, gather, sleep
+from asyncio import CancelledError, Task, create_task, sleep
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import json
@@ -11,6 +11,7 @@ from pydantic import BaseModel
 
 from heimdall import cfg
 from heimdall.component.models import Component, ComponentModel, Host, NodeExporter, Proxy, TCPServer, WebServer
+from heimdall.util import send_email
 
 LOG = getLogger(__name__)
 
@@ -19,6 +20,16 @@ class MonitorModel(BaseModel):
     monitor: str
     healthy: bool
     components: list[ComponentModel]
+
+
+def create_state_change_email(monitor: MonitorModel, changeset: list[Component]):
+    return f"""\
+{len(changeset)} component(s) changed state:
+
+{'\n'.join(f"* {c}" for c in changeset)}
+
+{monitor}
+"""
 
 
 class Monitor:
@@ -92,12 +103,20 @@ class Monitor:
                 start = datetime.now()
                 LOG.debug("Starting polling cycle")
 
+                changed = []
                 for c in self.components:
                     try:
-                        await c.poll()
+                        change = await c.poll()
+                        if change:
+                            changed.append(c)
                         await sleep(cfg.POLL_STAGGER_TIME)
                     except Exception as e:
                         LOG.error("Caught error during poll of %s", c)
+
+                if changed:
+                    message = create_state_change_email(self, changed)
+                    subject = "Ulv.io services resumed normal operation" if self.healthy else "Ongoing component outage"
+                    create_task(send_email(message, subject=subject))
 
                 wait = start + relativedelta(seconds=cfg.POLL_INTERVAL) - datetime.now()
                 LOG.debug("Polling finished for %s, waiting %ss until next poll", self, round(wait.total_seconds(), 1))
@@ -128,3 +147,6 @@ class Monitor:
 
     def __repr__(self) -> str:
         return f"Monitor<{self.state}>[healthy={self.num_healthy}/{len(self.components)}]"
+
+    def __str__(self) -> str:
+        return f"Monitor is {self.state} with {self.num_healthy} of {len(self.components)} healthy components."
