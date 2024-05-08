@@ -1,5 +1,7 @@
 """Monitoring agent"""
 
+from __future__ import annotations
+
 from asyncio import CancelledError, Task, create_task, sleep
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -22,7 +24,7 @@ class MonitorModel(BaseModel):
     components: list[ComponentModel]
 
 
-def create_state_change_email(monitor: MonitorModel, changeset: list[Component]):
+def create_state_change_email(monitor: Monitor, changeset: list[Component]):
     return (
         f"{len(changeset)} component(s) changed state:{chr(10)}{chr(10)}"
         f"{chr(10).join(f' {c}' for c in changeset)}{chr(10)}{chr(10)}"
@@ -109,7 +111,7 @@ class Monitor:
                             changed.append(c)
                         await sleep(cfg.POLL_STAGGER_TIME)
                     except Exception as e:
-                        LOG.error("Caught error during poll of %s", c)
+                        LOG.error("Caught error during poll of %s: %s", c, e)
 
                 if changed:
                     message = create_state_change_email(self, changed)
