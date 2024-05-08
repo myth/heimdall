@@ -85,7 +85,7 @@ class Component:
     async def init(self):
         LOG.info("Initializing component '%s'", self.name)
 
-        found = await database.fetch_one(component_table.select(component_table.c.name == self.name))
+        found = await database.fetch_one(component_table.select().where(component_table.c.name == self.name))
         if not found:
             await database.execute(
                 component_table.insert().values(

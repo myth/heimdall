@@ -1,5 +1,7 @@
 """Heimdall systems monitoring suite"""
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
@@ -9,23 +11,20 @@ from heimdall.db import database, init_database
 from heimdall.monitor import Monitor, MonitorModel
 
 
-app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["HEAD", "GET"], allow_headers=["*"])
-monitor = Monitor()
-monitor.load_from_config(cfg.CONFIG_FILE)
-
-
-@app.on_event("startup")
-async def startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     await database.connect()
     init_database()
     monitor.start()
-
-
-@app.on_event("shutdown")
-async def shutdown():
+    yield
     await monitor.stop()
     await database.disconnect()
+
+
+app = FastAPI(lifespan=lifespan) # type: ignore
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["HEAD", "GET"], allow_headers=["*"])
+monitor = Monitor()
+monitor.load_from_config(cfg.CONFIG_FILE)
 
 
 @app.get("/api", response_model=MonitorModel)
