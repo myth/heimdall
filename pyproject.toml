@@ -1,29 +1,23 @@
-[tool.ruff]
-line-length = 120
-
-[tool.poetry]
+[project]
 name = "heimdall"
 version = "0.2.0"
 description = "Systems monitoring service"
-authors = ["Aleksander Skraastad <myth@overflow.no>"]
+authors = ["Aleksander S. <myth@overflow.no>"]
 license = "MIT"
 readme = "README.md"
-package-mode = false
+requires-python = ">=3.12"
+dependencies = [
+    "aiohttp>=3.11.13",
+    "aiosmtplib>=4.0.0",
+    "aiosqlite>=0.21.0",
+    "databases>=0.9.0",
+    "fastapi>=0.115.11",
+    "python-dateutil>=2.9.0.post0",
+    "python-decouple>=3.8",
+    "uvicorn>=0.34.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-uvicorn = "^0.29.0"
-fastapi = "^0.111.0"
-databases = "^0.9.0"
-aiosqlite = "^0.20.0"
-python-decouple = "^3.8"
-aiohttp = "^3.9.5"
-python-dateutil = "^2.9.0.post0"
-aiosmtplib = "^3.0.1"
-
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.4.3"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[dependency-groups]
+dev = [
+    "ruff>=0.9.9",
+]
