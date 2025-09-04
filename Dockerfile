@@ -1,15 +1,15 @@
 FROM python:3.12-alpine
 
 WORKDIR /app
-RUN pip install poetry
+RUN pip install uv
 
-ADD poetry.lock pyproject.toml /app/
-RUN poetry install
+ADD uv.lock pyproject.toml /app/
+RUN uv sync --frozen
 
 COPY heimdall/ /app/heimdall
 COPY main.py /app/
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
 
-ENTRYPOINT [ "poetry", "run", "python", "main.py" ]
+ENTRYPOINT [ "uv", "run", "python", "main.py" ]
