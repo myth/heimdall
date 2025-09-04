@@ -17,16 +17,13 @@ class ComponentState(StrEnum):
 
 
 async def check_url(url: str, *, ignore_unauthorized: bool = False) -> ComponentState:
-    async with ClientSession() as session:
-        async with session.get(url) as response:
-            if response.status >= 500:
-                return ComponentState.DEAD
-            elif ignore_unauthorized and response.status in (401, 403):
-                return ComponentState.OK
-            elif response.ok:
-                return ComponentState.OK
-            else:
-                return ComponentState.DEGRADED
+    async with ClientSession() as session, session.get(url) as response:
+        if response.ok or ignore_unauthorized and response.status in (401, 403):
+            return ComponentState.OK
+        if response.status >= 500:
+            return ComponentState.DEAD
+        else:
+            return ComponentState.DEGRADED
 
 
 async def ping_host(host: str) -> ComponentState:

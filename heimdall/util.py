@@ -10,7 +10,6 @@ from aiosmtplib import SMTP
 
 from heimdall.cfg import EMAIL_ADDRESS, EMAIL_RECIPIENT, EMAIL_SMTP_PORT, EMAIL_SMTP_SERVER, TZ
 
-
 logger = getLogger(__name__)
 
 

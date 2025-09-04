@@ -1,7 +1,7 @@
 """Heimdall database"""
 
-from databases import Database
 import sqlalchemy as sa
+from databases import Database
 
 from heimdall import cfg
 

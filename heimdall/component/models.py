@@ -6,11 +6,11 @@ from datetime import datetime
 from enum import StrEnum, auto
 from logging import getLogger
 
-from pydantic import BaseModel, Field
 import sqlalchemy as sa
+from pydantic import BaseModel, Field
 
-from heimdall.db import database, metadata
 from heimdall.component.checks import ComponentState, check_url, ping_host, tcp_connect
+from heimdall.db import database, metadata
 from heimdall.util import default_encoder
 
 LOG = getLogger(__name__)

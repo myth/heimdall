@@ -6,7 +6,6 @@ from zoneinfo import ZoneInfo
 
 from decouple import config as get_env
 
-
 # General options
 
 BASE_DIR: Path = Path(__file__).parent

@@ -21,7 +21,7 @@ async def lifespan(app: FastAPI):
     await database.disconnect()
 
 
-app = FastAPI(lifespan=lifespan) # type: ignore
+app = FastAPI(lifespan=lifespan)  # type: ignore
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["HEAD", "GET"], allow_headers=["*"])
 monitor = Monitor()
 monitor.load_from_config(cfg.CONFIG_FILE)
