@@ -55,8 +55,10 @@ class ComponentStateModel(BaseModel):
     class Config:
         json_encoders = {ComponentState: default_encoder}
 
-    def __eq__(self, other: ComponentStateModel) -> bool:
-        return self.component == other.component and self.state == other.state
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, ComponentStateModel):
+            return self.component == other.component and self.state == other.state
+        raise TypeError(f"Incompatible type {type(other)}")
 
     def __str__(self) -> str:
         return f"State<{self.component}>[state={self.state.name} ts={self.timestamp}]"

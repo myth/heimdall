@@ -4,7 +4,7 @@ from datetime import date, datetime
 from email.message import EmailMessage
 from enum import Enum
 from logging import getLogger
-from typing import Any
+from typing import Any, cast
 
 from aiosmtplib import SMTP
 
@@ -13,7 +13,7 @@ from heimdall.cfg import EMAIL_ADDRESS, EMAIL_RECIPIENT, EMAIL_SMTP_PORT, EMAIL_
 logger = getLogger(__name__)
 
 
-def default_encoder(o: Any):
+def default_encoder(o: Any) -> Any:
     if isinstance(o, datetime):
         return o.astimezone(TZ).isoformat()
     elif isinstance(o, date):
@@ -24,7 +24,9 @@ def default_encoder(o: Any):
         raise TypeError(f"Unserializable type: {type(o)}")
 
 
-async def send_email(body, recipient: str = EMAIL_RECIPIENT, subject: str = "Ulv network service state change"):
+async def send_email(
+    body, recipient: str = cast("str", EMAIL_RECIPIENT), subject: str = "Ulv network service state change"
+) -> None:
     """
     Asynchronously send an email.
 
