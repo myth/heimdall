@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from enum import StrEnum, auto
 from logging import getLogger
+from zoneinfo import ZoneInfo
 
 import sqlalchemy as sa
 from pydantic import BaseModel, Field
@@ -14,6 +15,7 @@ from heimdall.db import database, metadata
 from heimdall.util import default_encoder
 
 LOG = getLogger(__name__)
+UTC = ZoneInfo("UTC")
 
 
 class ComponentType(StrEnum):
@@ -46,7 +48,7 @@ component_state_table = sa.Table(
 
 class ComponentStateModel(BaseModel):
     id: int
-    component: str = Field(None, exclude=True)
+    component: str = Field(exclude=True)
     timestamp: datetime
     state: ComponentState
 
@@ -107,7 +109,7 @@ class Component:
             self.current = self.history.pop(0)
             LOG.debug("Last known component state for '%s': %s", self.name, self.current)
         else:
-            now = datetime.utcnow()
+            now = datetime.now(tz=UTC)
             id = await database.execute(
                 component_state_table.insert().values(
                     component=self.name,
