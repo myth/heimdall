@@ -1,11 +1,11 @@
 [project]
 name = "heimdall"
-version = "0.2.0"
+version = "0.3.0"
 description = "Systems monitoring service"
 authors = ["Aleksander S. <myth@overflow.no>"]
 license = "MIT"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
     "aiohttp>=3.12.15",
     "aiosmtplib>=4.0.2",
@@ -16,12 +16,18 @@ dependencies = [
     "python-decouple>=3.8",
     "uvicorn>=0.35.0",
 ]
+[dependency-groups]
+dev = [
+    "pyrefly>=1.0.0",
+    "ruff>=0.15.17",
+    "types-python-dateutil>=2.9.0.20240316",
+]
 
 # Tools
 
 [tool.ruff]
 line-length = 120
-target-version = 'py312'
+target-version = 'py314'
 
 [tool.ruff.lint]
 select = [
@@ -39,7 +45,9 @@ select = [
     "I",
 ]
 
-[tool.uv]
-dev-dependencies = [
-    "ruff>=0.12.12",
+[tool.pyrefly]
+project-includes = [
+    "**/*.py*",
+    "**/*.ipynb",
 ]
+

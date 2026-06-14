@@ -84,7 +84,7 @@ class Component:
         self.component_type = component_type
         self.group = group
         self.history: list[ComponentStateModel] = []
-        self.current = ComponentStateModel(id=0, component=name, timestamp=datetime.utcnow(), state=ComponentState.OK)
+        self.current = ComponentStateModel(id=0, component=name, timestamp=datetime.now(tz=UTC), state=ComponentState.OK)
 
     async def init(self):
         LOG.info("Initializing component '%s'", self.name)
@@ -134,12 +134,12 @@ class Component:
             id = await database.execute(
                 component_state_table.insert().values(
                     component=self.name,
-                    timestamp=datetime.utcnow(),
+                    timestamp=datetime.now(tz=UTC),
                     state=state,
                 )
             )
             self.history = [self.current] + self.history[:9]
-            self.current = ComponentStateModel(id=id, component=self.name, timestamp=datetime.utcnow(), state=state)
+            self.current = ComponentStateModel(id=id, component=self.name, timestamp=datetime.now(tz=UTC), state=state)
             LOG.info("Component '%s' changed state: %s", self.name, self.current)
             return self
 
