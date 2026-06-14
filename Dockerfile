@@ -4,7 +4,7 @@ WORKDIR /app
 RUN pip install uv
 
 ADD uv.lock pyproject.toml /app/
-RUN uv sync --frozen
+RUN uv sync --frozen --no-dev
 
 COPY heimdall/ /app/heimdall
 COPY main.py /app/
