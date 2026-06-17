@@ -12,4 +12,4 @@ COPY main.py /app/
 ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
 
-ENTRYPOINT [ "uv", "run", "python", "main.py" ]
+ENTRYPOINT [ "uv", "run", "--no-sync", "python", "main.py" ]

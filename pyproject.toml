@@ -48,6 +48,5 @@ select = [
 [tool.pyrefly]
 project-includes = [
     "**/*.py*",
-    "**/*.ipynb",
 ]
 
