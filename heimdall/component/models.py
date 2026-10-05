@@ -84,7 +84,9 @@ class Component:
         self.component_type = component_type
         self.group = group
         self.history: list[ComponentStateModel] = []
-        self.current = ComponentStateModel(id=0, component=name, timestamp=datetime.now(tz=UTC), state=ComponentState.OK)
+        self.current = ComponentStateModel(
+            id=0, component=name, timestamp=datetime.now(tz=UTC), state=ComponentState.OK
+        )
 
     async def init(self):
         LOG.info("Initializing component '%s'", self.name)
